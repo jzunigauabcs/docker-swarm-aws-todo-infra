@@ -30,6 +30,3 @@ services:
 networks:
   todo-network:
     driver: overlay
-
-volumes:
-  db_data:
