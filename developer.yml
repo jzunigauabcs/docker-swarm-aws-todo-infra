@@ -1,0 +1,43 @@
+services:
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: todo_db
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      todo_network:
+        aliases:
+          - db
+
+  api:
+    image: todo-api:latest
+    build: ../todo-core-api
+    container_name: todo_api
+    ports:
+      - "3000:3000"
+    environment:
+      DB_HOST: db
+      DB_USER: root
+      DB_PASSWORD: password
+      DB_NAME: todo_db
+      PORT: 3000
+    networks:
+      - todo_network
+
+  client:
+    image: todo-client:latest
+    build: ../todo-web-client
+    container_name: todo_web_client
+    ports:
+      - "8080:80"
+    networks:
+      - todo_network
+
+networks:
+  todo_network:
+    driver: bridge
+
+volumes:
+  db_data:
